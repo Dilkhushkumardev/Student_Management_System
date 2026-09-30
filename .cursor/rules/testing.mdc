@@ -1,0 +1,16 @@
+---
+description: Testing and Quality Assurance rules for JUnit 5, Mockito, and manual QA
+globs: src/test/**/*.java, docs/TEST_PLAN.md
+---
+
+# Testing & Quality Assurance Rules
+
+1. **Unit Test Coverage:**
+   - Write JUnit 5 unit tests for all mathematical rule calculations (shortage formulas, bunk margins, 5-mark slabs).
+   - Mock repository dependencies via `@Mock` and `@InjectMocks`.
+2. **Integration Testing:**
+   - Use `@SpringBootTest` and `MockMvc` for verifying secure endpoints and role permissions.
+3. **Boundary Testing:**
+   - Test edge cases: 0 classes held, 100% attendance, exactly 75.00%, exactly 74.99%, and 0% attendance.
+4. **Verification Step:**
+   - Always run `mvn clean test` or `mvn test-compile` before declaring changes complete.

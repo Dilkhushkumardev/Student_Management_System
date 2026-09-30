@@ -1,0 +1,12 @@
+---
+description: General engineering standards, AI interaction rules, and code quality invariants for SmartAttend
+globs: *
+---
+
+# General Development Rules (SmartAttend)
+
+1. **Do Not Break Existing Contracts:** Verify REST controller endpoints, DTO signatures, and database entity mappings before making modifications.
+2. **Context-Driven Development:** Always consult `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`, `docs/RULES.md`, and `docs/DECISIONS.md`.
+3. **Small, Atomic Changes:** Never attempt whole-system refactors in a single step. Implement vertical slices: Controller -> Service -> Repository -> UI.
+4. **Git Commit Format:** Use conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`).
+5. **No Secrets in Code:** Never commit credentials or API keys. Always use environment variables defined in `.env.example`.

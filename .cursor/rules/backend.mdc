@@ -1,0 +1,24 @@
+---
+description: Backend Java 21, Spring Boot 3.3.x, Spring Data JPA, Hibernate and Architecture rules
+globs: src/main/java/**/*.java, src/main/resources/**/*.yml, src/main/resources/db/migration/*.sql
+---
+
+# Backend Engineering Rules (Java 21 & Spring Boot)
+
+1. **Architecture Layering:**
+   - `controller`: Handle HTTP serialization, OpenAPI `@Tag` annotations, validation (`@Valid`), and return `ResponseEntity<ApiResponse<T>>`.
+   - `service`: Contain business workflows, rule evaluation, transaction boundaries (`@Transactional`).
+   - `repository`: Spring Data JPA interfaces.
+   - `entity`: JPA entities with standard annotations.
+2. **DTO & Response Wrapping:**
+   - Always return `ApiResponse<T>` with `success`, `message`, `data`, and `timestamp`.
+   - Never expose raw JPA entities to the controller layer. Use DTO records or classes.
+3. **Exception Handling:**
+   - Throw specific domain exceptions (e.g. `ResourceNotFoundException`, `SessionLockedException`).
+   - Catch and format exceptions inside `GlobalExceptionHandler.java`.
+4. **Flyway Migrations:**
+   - Existing migration scripts (`V1` to `V6`) are immutable.
+   - Append new schema alterations as `V7__<name>.sql` using ANSI-SQL compatible syntax for both H2 and MySQL.
+5. **BEU Rule Calculations:**
+   - Classes Needed: $\max(0, \lceil (0.75 \times \text{Total} - \text{Attended}) / 0.25 \rceil)$
+   - Safe Margin: $\max(0, \lfloor (\text{Attended} / 0.75) - \text{Total} \rfloor)$

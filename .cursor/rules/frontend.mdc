@@ -1,0 +1,21 @@
+---
+description: Frontend JavaScript, HTML5, Bootstrap 5.3, and CSS design system guidelines
+globs: src/main/resources/static/**/*.html, src/main/resources/static/js/**/*.js, src/main/resources/static/css/**/*.css
+---
+
+# Frontend Engineering Rules (SmartAttend UI)
+
+1. **Modular Architecture:**
+   - Organize JavaScript into modular namespaces/IIFEs to avoid global pollution.
+   - All network calls must pass through `ApiClient` in `src/main/resources/static/js/api.js`.
+2. **Design Tokens & Theme Consistency:**
+   - Adhere strictly to the color palette in `docs/DESIGN.md`:
+     - Safe ($>85\%$): Emerald `#10B981`
+     - Warning ($75\%\text{--}84\%$): Amber `#F59E0B`
+     - Shortage ($<75\%$): Crimson `#EF4444`
+     - Condonation ($60\%\text{--}74.99\%$): Rose `#F43F5E`
+3. **Real-Time SSE Event Handling:**
+   - Always verify and close native `EventSource` connections on page unload.
+   - Smoothly animate UI counter updates with CSS pulses instead of abrupt re-renders.
+4. **XSS Protection:**
+   - Render untrusted user inputs (student names, roll numbers, remarks) using `.textContent` or safe DOM text creation.

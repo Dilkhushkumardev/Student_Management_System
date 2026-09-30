@@ -1,0 +1,18 @@
+---
+description: Security, JWT authentication, RBAC authorization, and OWASP compliance rules
+globs: src/main/java/com/smartattend/security/**/*.java, src/main/java/com/smartattend/config/**/*.java
+---
+
+# Security & RBAC Rules
+
+1. **Stateless Security:**
+   - Spring Security must be configured as `SessionCreationPolicy.STATELESS`.
+   - Never store user session state in JVM heap memory.
+2. **Password Security:**
+   - Always hash passwords using `BCryptPasswordEncoder(12)`. Never store or log plaintext passwords.
+3. **Authorization Checks:**
+   - Use `@PreAuthorize("hasRole('...')")` on sensitive controller endpoints.
+   - Restrict student data queries so students can ONLY access their own records.
+4. **Secret Key Management:**
+   - Load JWT Secret from `smartattend.jwt.secret` (environment variable `JWT_SECRET`).
+   - Never hardcode the production secret key in Java source files.
