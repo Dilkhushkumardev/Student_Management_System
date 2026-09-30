@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # MySQL 8.0 Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: smartattend-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_beu
+      MYSQL_DATABASE: smartattend_db
+      MYSQL_USER: smartattend
+      MYSQL_PASSWORD: smartattend_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - smartattend-net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Spring Boot 3.3.4 Application Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartattend-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: smartattend_db
+      DB_USERNAME: smartattend
+      DB_PASSWORD: smartattend_secret
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      JWT_EXPIRATION_MS: 86400000
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - smartattend-net
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  smartattend-net:
+    driver: bridge

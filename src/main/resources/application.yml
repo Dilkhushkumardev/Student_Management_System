@@ -1,0 +1,68 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: smart-attend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:mysql}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    locations: classpath:db/migration
+
+# SmartAttend Custom Properties
+smartattend:
+  jwt:
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000} # 7 days
+  academic:
+    university-name: "Bihar Engineering University, Patna"
+    college-name: "Gaya College of Engineering / BEU Engineering College"
+    college-code: "110"
+    current-session: "2026-2030"
+    current-semester: "1st Semester"
+    default-department: "Computer Science & Engineering"
+    default-branch-code: "105"
+  attendance:
+    default-minimum-percentage: 75.0
+    default-condonation-percentage: 15.0 # up to 15% medical condonation (60%-74.99%)
+    default-late-weight: 1.0 # 1.0 = counted as present, 0.5 = half credit
+    allow-faculty-override-after-lock: false
+  biometric:
+    default-mode: ${BIOMETRIC_MODE:DEMO} # DEMO or HARDWARE
+    heartbeat-timeout-seconds: 120
+    simulation-auto-delay-ms: 300
+
+# OpenAPI / Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+# Actuator Health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

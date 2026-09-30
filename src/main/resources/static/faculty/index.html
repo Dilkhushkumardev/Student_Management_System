@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Portal - SmartAttend | Bihar Engineering University</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <div class="brand-info">
+                    <h4>SmartAttend</h4>
+                    <p>Faculty ERP</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-title">Classroom Management</div>
+                <a class="nav-item-custom active" href="#sessions"><i class="fas fa-list-check"></i> Attendance Sessions</a>
+                <a class="nav-item-custom" href="#sheet"><i class="fas fa-table-cells"></i> Student Marking Sheet</a>
+                <a class="nav-item-custom" href="/biometric/live.html"><i class="fas fa-broadcast-tower text-danger"></i> Biometric Live Screen</a>
+
+                <div class="nav-section-title mt-4">Academic Workload</div>
+                <div class="px-3 py-2 text-muted small">
+                    <div><strong>Department:</strong> CSE</div>
+                    <div><strong>Assigned Course:</strong> 100102 — Maths I</div>
+                    <div><strong>Section:</strong> CSE-A</div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-badge">
+                    <div class="user-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-chalkboard-user"></i>
+                    </div>
+                    <div class="user-details flex-grow-1">
+                        <h6 class="faculty-name-display text-truncate" style="max-width: 140px;">Faculty User</h6>
+                        <span>Assistant Professor</span>
+                    </div>
+                    <button class="btn btn-sm text-danger p-0 ms-2" onclick="logout()" title="Logout">
+                        <i class="fas fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="university-tag">
+                        <i class="fas fa-university"></i>
+                        <span>Bihar Engineering University, Patna</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="theme-toggle-btn" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-sm btn-erp-primary" data-bs-toggle="modal" data-bs-target="#createSessionModal">
+                        <i class="fas fa-plus me-1"></i> Start Attendance Session
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="app-content">
+                <!-- Welcome Banner -->
+                <div class="erp-card mb-4">
+                    <div class="erp-card-body d-flex justify-content-between align-items-center flex-wrap gap-3 py-3">
+                        <div>
+                            <span class="badge bg-success-subtle text-success fw-bold mb-1">Faculty Control Center</span>
+                            <h4 class="fw-bold mb-0">Today's Attendance Sessions</h4>
+                            <p class="text-muted small mb-0">Record manual roll calls or supervise real-time biometric ingestion for B.Tech classes</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-erp-outline" onclick="loadActiveSessions()">
+                                <i class="fas fa-rotate-right me-1"></i> Refresh Sessions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Sessions Table -->
+                <div class="erp-card mb-4" id="sessions">
+                    <div class="erp-card-header">
+                        <h5><i class="fas fa-calendar-day text-primary"></i> Created Attendance Sessions</h5>
+                    </div>
+                    <div class="erp-card-body p-0">
+                        <div class="table-responsive">
+                            <table class="erp-table">
+                                <thead>
+                                    <tr>
+                                        <th>Session Code</th>
+                                        <th>Subject</th>
+                                        <th>Section</th>
+                                        <th>Period</th>
+                                        <th>Turnout</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sessions-table-body">
+                                    <tr><td colspan="7" class="text-center py-4 text-muted">Loading attendance sessions...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Marking Sheet -->
+                <div class="erp-card" id="sheet">
+                    <div class="erp-card-header flex-wrap gap-2">
+                        <div>
+                            <h5 id="marking-session-title">Select a Session to View Student Sheet</h5>
+                            <small class="text-muted" id="marking-session-meta">Click [Sheet] in the table above to load class roll</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-success" onclick="markAll('PRESENT')">
+                                <i class="fas fa-check-double me-1"></i> All Present
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="markAll('ABSENT')">
+                                <i class="fas fa-xmark me-1"></i> All Absent
+                            </button>
+                            <button id="btn-lock-session" class="btn btn-sm btn-erp-primary" onclick="lockCurrentSession()">
+                                <i class="fas fa-lock me-1"></i> Lock Attendance Session
+                            </button>
+                        </div>
+                    </div>
+                    <div class="erp-card-body p-0">
+                        <div class="table-responsive">
+                            <table class="erp-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">#</th>
+                                        <th style="width: 140px;">Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Biometric Verification</th>
+                                        <th style="width: 200px;">Attendance Status</th>
+                                        <th>Faculty Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="marking-table-body">
+                                    <tr><td colspan="6" class="text-center py-4 text-muted">Loading marking sheet...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Attendance Session Modal -->
+    <div class="modal fade" id="createSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle text-primary me-2"></i> Start Attendance Session</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form onsubmit="createNewSession(event)">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Subject / Course</label>
+                            <select id="modal-subject-select" class="form-select" required>
+                                <option value="1">Loading subjects...</option>
+                            </select>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small text-muted">Section</label>
+                                <select id="modal-section-select" class="form-select" required>
+                                    <option value="1">Section A</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small text-muted">Period</label>
+                                <select id="modal-period-select" class="form-select" required>
+                                    <option value="1">Period 1 (10:00 - 11:00)</option>
+                                    <option value="2">Period 2 (11:00 - 12:00)</option>
+                                    <option value="3">Period 3 (12:00 - 01:00)</option>
+                                    <option value="4">Period 4 (02:00 - 03:00)</option>
+                                    <option value="5">Period 5 (03:00 - 04:00)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small text-muted">Date</label>
+                                <input type="date" id="modal-date-input" class="form-control" value="2026-09-29">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small text-muted">Attendance Mode</label>
+                                <select id="modal-mode-select" class="form-select">
+                                    <option value="BIOMETRIC">BIOMETRIC (Live Gateway)</option>
+                                    <option value="MANUAL">MANUAL ROLL CALL</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-erp-primary">Create & Begin Session</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/api.js?v=1.0.1"></script>
+    <script src="/js/auth.js?v=1.0.1"></script>
+    <script src="/js/faculty.js?v=1.0.1"></script>
+</body>
+</html>
